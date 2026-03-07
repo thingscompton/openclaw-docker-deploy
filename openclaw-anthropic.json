@@ -1,0 +1,254 @@
+{
+  "meta": {
+    "lastTouchedVersion": "2026.3.3",
+    "lastTouchedAt": "2026-03-07T07:00:00.000Z"
+  },
+  "wizard": {
+    "lastRunAt": "2026-03-04T07:41:23.225Z",
+    "lastRunVersion": "2026.3.3",
+    "lastRunCommand": "configure",
+    "lastRunMode": "local"
+  },
+  "auth": {
+    "profiles": {
+      "anthropic:manual": {
+        "provider": "anthropic",
+        "mode": "token"
+      }
+    }
+  },
+  "browser": {
+    "enabled": true,
+    "executablePath": "/usr/bin/google-chrome-stable",
+    "headless": true,
+    "noSandbox": true,
+    "profiles": {
+      "openclaw": {
+        "cdpPort": 19222,
+        "color": "#FF4500"
+      }
+    }
+  },
+  "models": {
+    "providers": {
+      "flash": {
+        "baseUrl": "http://host.docker.internal:14725/v1",
+        "apiKey": "__OPENCLAW_REDACTED__",
+        "api": "openai-completions",
+        "injectNumCtxForOpenAICompat": true,
+        "models": [
+          {
+            "id": "gpt-3.5",
+            "name": "gpt-3.5 (Custom Provider)",
+            "reasoning": false,
+            "input": [
+              "text",
+              "image"
+            ],
+            "cost": {
+              "input": 0.5,
+              "output": 1.5,
+              "cacheRead": 0.05,
+              "cacheWrite": 0.5
+            },
+            "contextWindow": 1048576,
+            "maxTokens": 65536
+          },
+          {
+            "id": "gpt-4o",
+            "name": "gpt-4o (Custom Provider)",
+            "reasoning": true,
+            "input": [
+              "text",
+              "image"
+            ],
+            "cost": {
+              "input": 0.5,
+              "output": 3,
+              "cacheRead": 0.05,
+              "cacheWrite": 0.5
+            },
+            "contextWindow": 1048576,
+            "maxTokens": 65536
+          }
+        ]
+      },
+      "claude": {
+        "baseUrl": "https://api.anthropic.com",
+        "apiKey": "你的claude的token,请自行购买并绑定...",
+        "api": "anthropic-messages",
+        "models": [
+          {
+            "id": "claude-opus-4-6",
+            "name": "Claude Opus 4.6",
+            "reasoning": true,
+            "input": [
+              "text",
+              "image"
+            ],
+            "cost": {
+              "input": 15,
+              "output": 75,
+              "cacheRead": 1.5,
+              "cacheWrite": 18.75
+            },
+            "contextWindow": 200000,
+            "maxTokens": 16384
+          },
+          {
+            "id": "claude-sonnet-4-20250514",
+            "name": "Claude Sonnet 4",
+            "reasoning": true,
+            "input": [
+              "text",
+              "image"
+            ],
+            "cost": {
+              "input": 3,
+              "output": 15,
+              "cacheRead": 0.3,
+              "cacheWrite": 3.75
+            },
+            "contextWindow": 200000,
+            "maxTokens": 16384
+          },
+          {
+            "id": "claude-3-5-haiku-20241022",
+            "name": "Claude 3.5 Haiku",
+            "reasoning": false,
+            "input": [
+              "text",
+              "image"
+            ],
+            "cost": {
+              "input": 0.8,
+              "output": 4,
+              "cacheRead": 0.08,
+              "cacheWrite": 1
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          }
+        ]
+      }
+    },
+    "bedrockDiscovery": {
+      "defaultContextWindow": 1
+    }
+  },
+  "agents": {
+    "defaults": {
+      "models": {
+        "flash/gpt-4o": {
+          "alias": "gpt-4o"
+        },
+        "flash/gpt-3.5": {
+          "alias": "gpt-3.5"
+        },
+        "claude/claude-opus-4-6": {
+          "alias": "opus"
+        },
+        "claude/claude-sonnet-4-20250514": {
+          "alias": "sonnet"
+        },
+        "claude/claude-3-5-haiku-20241022": {
+          "alias": "haiku"
+        }
+      },
+      "workspace": "/home/node/.openclaw/workspace",
+      "memorySearch": {
+        "provider": "local",
+        "fallback": "none",
+        "local": {
+          "modelPath": "hf:nomic-ai/nomic-embed-text-v1.5-GGUF"
+        }
+      },
+      "compaction": {
+        "mode": "safeguard"
+      },
+      "thinkingDefault": "medium",
+      "imageMaxDimensionPx": 1024,
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8
+      }
+    },
+    "list": [
+      {
+        "id": "claude-agent",
+        "default": true,
+        "name": "Claude 🤖 智能助手",
+        "model": {
+          "primary": "claude/claude-opus-4-6",
+          "fallbacks": [
+            "claude/claude-sonnet-4-20250514",
+            "claude/claude-3-5-haiku-20241022"
+          ]
+        },
+        "identity": {
+          "name": "Claude",
+          "emoji": "🤖"
+        }
+      },
+      {
+        "id": "flash",
+        "name": "Flash ⚡ 快速响应",
+        "model": {
+          "primary": "flash/gpt-4o"
+        },
+        "identity": {
+          "name": "Flash",
+          "emoji": "⚡"
+        }
+      }
+    ]
+  },
+  "tools": {
+    "profile": "full"
+  },
+  "messages": {
+    "ackReactionScope": "group-mentions"
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  },
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "dmPolicy": "pairing",
+      "botToken": "你的tg的机器人token",
+      "groupPolicy": "allowlist",
+      "streaming": "partial"
+    }
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "lan",
+    "controlUi": {
+      "allowedOrigins": [
+        "http://localhost:18789",
+        "http://127.0.0.1:18789",
+        "*"
+      ]
+    },
+    "auth": {
+      "mode": "token",
+      "token": "你openclaw网页登录的token"
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    }
+  },
+  "plugins": {
+    "entries": {
+      "telegram": {
+        "enabled": true
+      }
+    }
+  }
+}
