@@ -165,3 +165,26 @@ docker compose exec openclaw-gateway openclaw security audit --deep
     docker exec -it openclaw-gateway openclaw models auth paste-token --provider anthropic
 
     # 请使用 openclaw-anthropic.json 配置修改你的 oepnclaw.json 内容，然后请重新加载配置，直接再次执行 docker compose up -d 就可以了
+
+## 4.配置 clawhub 相关
+
+### 4.1> 基础设置
+
+    # 使用淘宝镜像源以确保安装成功，不受海外 API 频率限制
+    npm config set registry https://registry.npmmirror.com
+
+    # 全局安装 clawhub 0.7.0
+    npm install -g clawhub@0.7.0
+
+### 4.2> 登录 clawhub
+
+    # 打开网址，若无账号请先授权登录
+    https://clawhub.ai/settings
+
+    # 创建 api-token
+    找打 API tokens -> create token 按钮，点击后生成 token 后进行复制
+
+    # 在容器内执行
+    clawhub auth set-token {你复制的token,请替换...}
+
+    
