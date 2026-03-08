@@ -187,4 +187,12 @@ docker compose exec openclaw-gateway openclaw security audit --deep
     # 在容器内执行
     clawhub auth set-token {你复制的token,请替换...}
 
+### 4.3? 安装 skill
+
+    # 第一个必须安装的 skill, 用于检查以后添加的 skill 是否存在安全隐患
+    clawhub install skill-vetter
+
+    # 强制重新安装最新版本
+    clawhub install skill-vetter --force
+
     

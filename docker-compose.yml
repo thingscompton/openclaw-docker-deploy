@@ -6,6 +6,8 @@ services:
     environment:
       HOME: /home/node
       TERM: xterm-256color
+      # 关键变量：锁定配置根目录
+      OPENCLAW_HOME: /home/node/.openclaw
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
       OPENCLAW_GATEWAY_REMOTE_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
       OPENCLAW_UI: "true"
@@ -47,6 +49,8 @@ services:
     network_mode: "service:openclaw-gateway"
     environment:
       HOME: /home/node
+      # 补充这一行，确保 CLI 安装技能时也认准持久化目录
+      OPENCLAW_HOME: /home/node/.openclaw
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
     volumes:
       - ${OPENCLAW_CONFIG_DIR:-./data}:/home/node/.openclaw
