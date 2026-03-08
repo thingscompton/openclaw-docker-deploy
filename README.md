@@ -32,7 +32,7 @@
 docker compose up -d
 ```
 
-### 2.4 请开启你的反代理软件 Antigravity-Tool
+### 2.4 请开启你的反代理软件 Antigravity-Tool (已弃用该 2。4 的方案, 请使用下面的 claude.ai 的订阅方案)
 
     2.4.1> 在账号管理里请自己设置和绑定你的账号（省略操作，如果不会请自己查询资料）
 
@@ -41,14 +41,14 @@ docker compose up -d
         1> 设置监听端口，默认为 8045， 如果冲突可以自己随意修改端口
         2> 点击启动服务，开启反向代理服务
 
-### 2.5 服务启动后的首次初始化配置命令
-
-    2.5.1> 容器网络与连通性验证 (First Ping), 需要确认在docker容器内是否可以访问到到 Antigravity-Tool 的反代理工具
+    2.4.3> 容器网络与连通性验证 (First Ping), 需要确认在docker容器内是否可以访问到到 Antigravity-Tool 的反代理工具
 ```bash
 docker compose exec openclaw-gateway curl -v http://host.docker.internal:14725/v1/models
 ```
 
-    2.5.2> 身份配对与授权 (Telegram Pairing)
+### 2.5 服务启动后的首次初始化配置命令
+
+    2.5.1> 身份配对与授权 (Telegram Pairing)
 
     当你第一次在 Telegram 给机器人发消息时，系统会拦截并要求授权：在 TG 聊天框获取 Pairing Code（例如：123-456）。
 
@@ -57,17 +57,17 @@ docker compose exec openclaw-gateway curl -v http://host.docker.internal:14725/v
 docker compose exec openclaw-gateway openclaw pairing approve telegram [你的配对码]
 ```
 
-    2.5.3> 文件系统权限初始化 (Permission Fix), 因为 Docker 内部用户是 node，需要手动修正挂载目录权限, 解决 EACCES: permission denied 导致的无法创建文件夹问题。
+    2.5.2> 文件系统权限初始化 (Permission Fix), 因为 Docker 内部用户是 node，需要手动修正挂载目录权限, 解决 EACCES: permission denied 导致的无法创建文件夹问题。
 ```bash
 docker compose exec -u root openclaw-gateway chown -R node:node /home/node/.openclaw
 ```
 
-    2.5.4> 记忆系统索引初始化 (Memory Init)
+    2.5.3> 记忆系统索引初始化 (Memory Init)
 ```bash
 docker compose exec openclaw-gateway touch /home/node/.openclaw/workspace/MEMORY.md
 ```
 
-    2.5.5> 核心配置项目设置, 在 OpenClaw 控制面板的 Configuration -> Raw 模式下复制如下配置，请注意有的参数需要你自己去填写，例如：apiKey | botToken
+    2.5.4> 核心配置项目设置, 在 OpenClaw 控制面板的 Configuration -> Raw 模式下复制如下配置，请注意有的参数需要你自己去填写，例如：apiKey | botToken
 ```json
 {
   "meta": {
@@ -143,7 +143,7 @@ docker compose exec openclaw-gateway touch /home/node/.openclaw/workspace/MEMORY
 }
 ```
 
-    2.5.6> 健康检查与审计 (Doctor & Audit), 最后，我们通过这两个命令确认系统已经“健康”
+    2.5.5> 健康检查与审计 (Doctor & Audit), 最后，我们通过这两个命令确认系统已经“健康”
 ```bash
 # 检查 Agent 是否配置了 Key
 docker compose exec openclaw-gateway openclaw doctor

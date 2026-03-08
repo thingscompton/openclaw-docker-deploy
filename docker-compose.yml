@@ -6,8 +6,6 @@ services:
     environment:
       HOME: /home/node
       TERM: xterm-256color
-      # 关键变量：锁定配置根目录
-      OPENCLAW_HOME: /home/node/.openclaw
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
       OPENCLAW_GATEWAY_REMOTE_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
       OPENCLAW_UI: "true"
@@ -18,25 +16,14 @@ services:
       GITHUB_TOKEN: ${GITHUB_TOKEN}
     volumes:
       - ${OPENCLAW_CONFIG_DIR:-./data}:/home/node/.openclaw
-      - ${OPENCLAW_WORKSPACE_DIR:-./workspace}:/home/node/.openclaw/workspace
-      - ${OPENCLAW_SKILLS_DIR:-./skills}:/home/node/.openclaw/skills
     ports:
       - "18789:18789"
       - "18790:18790"
     init: true
     restart: unless-stopped
-    command:
-      [
-        "node",
-        "dist/index.js",
-        "gateway",
-        "--bind",
-        "${OPENCLAW_GATEWAY_BIND:-lan}",
-        "--port",
-        "18789"
-      ]
+    command: [ "node", "dist/index.js", "gateway", "--bind", "${OPENCLAW_GATEWAY_BIND:-lan}", "--port", "18789" ]
     healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:18789/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      test: [ "CMD", "node", "-e", "fetch('http://127.0.0.1:18789/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))" ]
       interval: 30s
       timeout: 5s
       retries: 5
@@ -49,15 +36,12 @@ services:
     network_mode: "service:openclaw-gateway"
     environment:
       HOME: /home/node
-      # 补充这一行，确保 CLI 安装技能时也认准持久化目录
-      OPENCLAW_HOME: /home/node/.openclaw
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
     volumes:
       - ${OPENCLAW_CONFIG_DIR:-./data}:/home/node/.openclaw
-      - ${OPENCLAW_WORKSPACE_DIR:-./workspace}:/home/node/.openclaw/workspace
     stdin_open: true
     tty: true
     init: true
-    entrypoint: ["node", "dist/index.js"]
+    entrypoint: [ "node", "dist/index.js" ]
     depends_on:
       - openclaw-gateway
