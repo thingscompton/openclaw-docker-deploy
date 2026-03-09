@@ -113,8 +113,8 @@
             "maxTokens": 16384
           },
           {
-            "id": "claude-3-5-haiku-20241022",
-            "name": "Claude 3.5 Haiku",
+            "id": "claude-haiku-4-5-20251001",
+            "name": "Claude Haiku 4.5",
             "reasoning": false,
             "input": [
               "text",
@@ -151,7 +151,7 @@
         "claude/claude-sonnet-4-20250514": {
           "alias": "sonnet"
         },
-        "claude/claude-3-5-haiku-20241022": {
+        "claude/claude-haiku-4-5-20251001": {
           "alias": "haiku"
         }
       },
@@ -182,7 +182,7 @@
           "primary": "claude/claude-opus-4-6",
           "fallbacks": [
             "claude/claude-sonnet-4-20250514",
-            "claude/claude-3-5-haiku-20241022"
+            "claude/claude-haiku-4-5-20251001"
           ]
         },
         "identity": {
