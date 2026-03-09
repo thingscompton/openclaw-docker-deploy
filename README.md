@@ -1,9 +1,17 @@
 # 🦞 OpenClaw 部署与实战全攻略
 
 ## 1. 核心架构设计
-本项目基于 **OpenClaw (v2026.3.3)**，采用容器化部署，通过 Mac 宿主机链路连接 API Provider。
-* **主模型**：`gpt-4o` (开启 Reasoning 推理)
-* **备选模型**：`gpt-3.5`
+本项目基于 **OpenClaw (v2026.3.*)**，采用容器化部署，通过 Mac 宿主机链路连接多个 API Provider。
+
+### 1.1 双 Agent 架构
+| Agent | 主模型 | 备选模型 | 特性 |
+|-------|--------|---------|------|
+| **claude-agent** (默认) | `claude-opus-4-6` | `claude-sonnet-4-20250514` → `claude-haiku-4-5-20251001` | 推理能力强，上下文 200K |
+| **flash** | `gpt-4o` | `gpt-3.5` | 响应快速，支持 Reasoning |
+
+### 1.2 API 提供商
+* **Anthropic Claude** - 官方 API (`https://api.anthropic.com`)
+* **Custom Flash Provider** - 本地反代 (`http://host.docker.internal:14725/v1`)
 
 ---
 
@@ -67,83 +75,17 @@ docker compose exec -u root openclaw-gateway chown -R node:node /home/node/.open
 docker compose exec openclaw-gateway touch /home/node/.openclaw/workspace/MEMORY.md
 ```
 
-    2.5.4> 核心配置项目设置, 在 OpenClaw 控制面板的 Configuration -> Raw 模式下复制如下配置，请注意有的参数需要你自己去填写，例如：apiKey | botToken
-```json
-{
-  "meta": {
-    "lastTouchedVersion": "2026.3.3"
-  },
-  "models": {
-    "providers": {
-      "flash": {
-        "baseUrl": "[http://host.docker.internal:14725/v1](http://host.docker.internal:14725/v1)",
-        "apiKey": "YOUR_SK_KEY",
-        "api": "openai-completions",
-        "injectNumCtxForOpenAICompat": true,
-        "models": [
-          {
-            "id": "gpt-4o",
-            "name": "gpt-4o (Custom Provider)",
-            "reasoning": true,
-            "contextWindow": 1048576,
-            "maxTokens": 65536
-          },
-          {
-            "id": "gpt-3.5",
-            "name": "gpt-3.5 (Custom Provider)",
-            "reasoning": false,
-            "contextWindow": 1048576,
-            "maxTokens": 65536
-          }
-        ]
-      }
-    }
-  },
-  "agents": {
-    "defaults": {
-      "workspace": "/home/node/.openclaw/workspace",
-      "memorySearch": {
-        "provider": "local",
-        "local": {
-          "modelPath": "hf:nomic-ai/nomic-embed-text-v1.5-GGUF"
-        }
-      },
-      "compaction": { "mode": "safeguard" },
-      "maxConcurrent": 4
-    },
-    "list": [
-      {
-        "id": "flash",
-        "default": true,
-        "name": "Flash ⚡ 快速响应",
-        "workspace": "/home/node/.openclaw/workspace",
-        "model": {
-          "primary": "flash/gpt-4o",
-          "fallbacks": ["flash/gpt-3.5"]
-        },
-        "identity": { "name": "Flash", "emoji": "⚡" }
-      }
-    ]
-  },
-  "browser": {
-    "enabled": true,
-    "executablePath": "/usr/bin/google-chrome-stable",
-    "headless": true,
-    "noSandbox": true
-  },
-  "channels": {
-    "telegram": {
-      "enabled": true,
-      "dmPolicy": "pairing",
-      "botToken": "YOUR_BOT_TOKEN",
-      "groupPolicy": "allowlist",
-      "streaming": "partial"
-    }
-  }
-}
-```
+    2.5.4> 核心配置项目设置，直接使用项目根目录下的 `openclaw-anthropic.json` 文件
 
-    2.5.5> 健康检查与审计 (Doctor & Audit), 最后，我们通过这两个命令确认系统已经“健康”
+    在 OpenClaw 控制面板的 Configuration -> Raw 模式下，复制 `openclaw-anthropic.json` 的全部内容。
+
+    **⚠️ 请修改以下关键参数**：
+    - `models.providers.flash.apiKey` - 从 Antigravity-Tool 反代工具获取（格式：`sk-xxx`）
+    - `models.providers.claude.apiKey` - 从 [claude.ai](https://claude.ai) 购买订阅后生成
+    - `channels.telegram.botToken` - Telegram 机器人令牌（可从 [@BotFather](https://t.me/botfather) 获取）
+    - `gateway.auth.token` - OpenClaw 网页登录令牌（控制面板 Settings 获取）
+
+    2.5.5> 健康检查与审计 (Doctor & Audit), 最后，我们通过这两个命令确认系统已经”健康”
 ```bash
 # 检查 Agent 是否配置了 Key
 docker compose exec openclaw-gateway openclaw doctor
