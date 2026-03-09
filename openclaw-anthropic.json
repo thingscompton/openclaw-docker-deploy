@@ -250,5 +250,25 @@
         "enabled": true
       }
     }
+  },
+    "skills": {
+    "load": {
+      "extraDirs": [
+        "/home/node/.openclaw/workspace/skills"
+      ],
+      "watch": true,
+      "watchDebounceMs": 250
+    },
+    "entries": {
+      "healthcheck": {
+        "enabled": true
+      },
+      "skill-creator": {
+        "enabled": true
+      },
+      "weather": {
+        "enabled": true
+      }
+    }
   }
 }
