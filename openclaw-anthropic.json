@@ -254,7 +254,9 @@
     "skills": {
     "load": {
       "extraDirs": [
-        "/home/node/.openclaw/workspace/skills"
+        "/app/skills",
+        "/home/node/.openclaw/workspace/skills",
+        "/nix/tmp/debug-tools/.openclaw/workspace/skills"
       ],
       "watch": true,
       "watchDebounceMs": 250
