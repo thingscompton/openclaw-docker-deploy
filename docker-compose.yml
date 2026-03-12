@@ -14,6 +14,8 @@ services:
       OPENCLAW_CHANNELS_TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
       # github access-token
       GITHUB_TOKEN: ${GITHUB_TOKEN}
+      # clawhub token
+      CLAWHUB_TOKEN: ${CLAWHUB_TOKEN}
     volumes:
       - ${OPENCLAW_CONFIG_DIR:-./data}:/home/node/.openclaw
     ports:
